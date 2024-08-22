@@ -9,6 +9,14 @@
 // `factorial(2)` to return `2`, and so on.
 //
 // Use only what you learned! No loops yet, so you'll have to use recursion!
+fn factorial(n: u32) -> u32 {
+    // we don't need to use reference here, because uint is allocated on stack frame,
+    // it will be cloned automaticly;
+    if n < 2 {
+        return 1;
+    }
+    n * factorial(n - 1)
+}
 
 #[cfg(test)]
 mod tests {
