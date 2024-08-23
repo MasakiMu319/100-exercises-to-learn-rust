@@ -45,6 +45,46 @@ impl Ticket {
     pub fn status(&self) -> &String {
         &self.status
     }
+
+    pub fn set_title(&mut self, new_title: String) {
+        let valid_title: String = self.check_title(new_title).unwrap();
+        self.title = valid_title;
+    }
+    pub fn set_description(&mut self, new_description: String) {
+        let valid_description: String = self.check_description(new_description).unwrap();
+        self.description = valid_description;
+    }
+    pub fn set_status(&mut self, new_status: String) {
+        let valid_status: String = self.check_status(new_status).unwrap();
+        self.status = valid_status;
+    }
+
+    fn check_title(&self, title: String) -> Result<String, String> {
+        if title.is_empty() {
+            Err("Title cannot be empty".to_string())
+        } else if title.len() > 50 {
+            Err("Title cannot be longer than 50 bytes".to_string())
+        } else {
+            Ok(title)
+        }
+    }
+
+    fn check_description(&self, description: String) -> Result<String, String> {
+        if description.is_empty() {
+            Err("Description cannot be empty".to_string())
+        } else if description.len() > 500 {
+            Err("Description cannot be longer than 500 bytes".to_string())
+        } else {
+            Ok(description)
+        }
+    }
+
+    fn check_status(&self, status: String) -> Result<String, String> {
+        match status.as_str() {
+            "To-Do" | "In Progress" | "Done" => Ok(status),
+            _ => Err("Only `To-Do`, `In Progress`, and `Done` statuses are allowed".to_string()),
+        }
+    }
 }
 
 #[cfg(test)]
