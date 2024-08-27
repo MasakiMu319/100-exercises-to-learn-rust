@@ -1,8 +1,43 @@
+use core::str;
+
 // TODO: Implement `TryFrom<String>` and `TryFrom<&str>` for the `TicketTitle` type,
 //   enforcing that the title is not empty and is not longer than 50 characters.
 //   Implement the traits required to make the tests pass too.
-
+#[derive(Debug, PartialEq, Clone)]
 pub struct TicketTitle(String);
+
+#[derive(Debug, thiserror::Error)]
+pub enum ParseTitleError {
+    #[error("The title cannot be empty")]
+    Empty,
+    #[error("The title cannot be longer than 50 bytes")]
+    TooLarge,
+}
+
+impl TryFrom<String> for TicketTitle {
+    type Error = ParseTitleError;
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        let title = parse_title(&value)?;
+        Ok(Self(title))
+    }
+}
+
+impl TryFrom<&str> for TicketTitle {
+    type Error = ParseTitleError;
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        let title = parse_title(value)?;
+        Ok(Self(title))
+    }
+}
+
+fn parse_title(title: &str) -> Result<String, ParseTitleError> {
+    if title.is_empty() {
+        return Err(ParseTitleError::Empty);
+    } else if title.len() > 50 {
+        return Err(ParseTitleError::TooLarge);
+    }
+    Ok(title.to_string())
+}
 
 #[cfg(test)]
 mod tests {

@@ -8,11 +8,19 @@
 // print both sides of the comparison to the terminal.
 // If the compared type doesn't implement `Debug`, it doesn't know how to represent them!
 
+use std::fmt::Debug;
+
 #[derive(PartialEq)]
 struct Ticket {
     title: String,
     description: String,
     status: String,
+}
+
+impl Debug for Ticket {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}, {}, {}", self.title, self.description, self.status)
+    }
 }
 
 #[cfg(test)]
@@ -51,6 +59,8 @@ mod tests {
             description: "description2".to_string(),
             status: status.to_string(),
         };
+        // We add derive macros - partialEq for Ticket, so we don't need to implete it again;
+        // but assert will use Debug trait, so we must implete `fmt` manually.
         assert_ne!(ticket1, ticket2);
     }
 

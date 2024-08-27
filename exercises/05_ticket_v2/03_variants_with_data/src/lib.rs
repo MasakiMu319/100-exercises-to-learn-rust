@@ -38,7 +38,14 @@ impl Ticket {
         }
     }
     pub fn assigned_to(&self) -> &str {
-        todo!()
+        match &self.status {
+            // Due to self.status is a borrow reference, so that `assigned_to` will be also a borrow type;
+            // if we use `self.status`, the rustc can't complie, because self is a borrow type, but self.status
+            // will change the ownership of `self.status`.
+            // Even if we can complie successfully, the assigned_to is a local varaible, we can't use `&` on it.
+            Status::InProgress { assigned_to } => &assigned_to,
+            _ => panic!("Only `In-Progress` tickets can be assigned to someone")
+        }
     }
 }
 
